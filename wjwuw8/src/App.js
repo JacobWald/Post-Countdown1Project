@@ -19,7 +19,7 @@ function Board({ xIsNext, squares, onPlay }) {
     } else {
       nextSquares[i] = "O";
     }
-    onPlay(nextSquares);
+    onPlay(nextSquares, i);
   }
 
   const winner = calculateWinner(squares);
@@ -54,12 +54,31 @@ function Board({ xIsNext, squares, onPlay }) {
 
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [positionList, setPositionList] = useState(Array());
+  const [currentPosition, setCurrentPosition] = useState(0);
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
-  function handlePlay(nextSquares) {
+  function handlePlay(nextSquares, i) {
+    const locations = [
+      [1, 1],
+      [1, 2],
+      [1, 3],
+      [2, 1],
+      [2, 2],
+      [2, 3],
+      [3, 1],
+      [3, 2],
+      [3, 3],
+    ];
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    const nextPosition = [
+      ...positionList.slice(0, currentPosition + 1),
+      locations[i],
+    ];
+    setPositionList(nextPosition);
+    setCurrentPosition(nextPosition.length - 1);
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
   }
@@ -71,7 +90,7 @@ export default function Game() {
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
-      description = "Go to move #" + move;
+      description = "Go to move #" + move + " @ " + positionList[move - 1];
     } else {
       description = "Go to game start";
     }
@@ -79,7 +98,7 @@ export default function Game() {
       <li key={move}>
         <button
           style={{
-            width: "100px",
+            width: "170px",
             height: "50px",
             // textAlign: "center",
             fontSize: "17px",
