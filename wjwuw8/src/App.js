@@ -54,7 +54,7 @@ function Board({ xIsNext, squares, onPlay }) {
 
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
-  const [positionList, setPositionList] = useState(Array());
+  const [positionList, setPositionList] = useState([Array(9).fill(null)]);
   const [currentPosition, setCurrentPosition] = useState(0);
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
@@ -73,24 +73,25 @@ export default function Game() {
       [3, 3],
     ];
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
-    const nextPosition = [
+    const nextPositionList = [
       ...positionList.slice(0, currentPosition + 1),
       locations[i],
     ];
-    setPositionList(nextPosition);
-    setCurrentPosition(nextPosition.length - 1);
+    setPositionList(nextPositionList);
+    setCurrentPosition(nextPositionList.length - 1);
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
   }
 
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
+    setCurrentPosition(nextMove);
   }
 
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
-      description = "Go to move #" + move + " @ " + positionList[move - 1];
+      description = "Go to move #" + move + " @ " + positionList[move];
     } else {
       description = "Go to game start";
     }
